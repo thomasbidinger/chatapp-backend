@@ -1,0 +1,9 @@
+@PaceBackend_HostAddress = http://localhost:5267
+
+GET {{PaceBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{PaceBackend_HostAddress}}/api/ApiKeys/
+Accept: application/json
