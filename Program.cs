@@ -1,10 +1,30 @@
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(options =>
+    {
+        builder.Configuration.Bind("AzureAdB2C", options);
+        options.TokenValidationParameters.NameClaimType = "name";
+    }, options => builder.Configuration.Bind("AzureAdB2C", options));
+builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+        policy.WithOrigins("http://localhost:5173") // Allow your React app's origin
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 
@@ -15,9 +35,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Use CORS policy
+app.UseCors("AllowReactApp");
+
 app.UseHttpsRedirection();
 app.UseRouting();
-app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers().RequireAuthorization();
+
+
 
 // var summaries = new[]
 // {
