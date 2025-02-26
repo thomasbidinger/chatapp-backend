@@ -1,0 +1,1 @@
+TODO: Configure the web api for sign out: https://learn.microsoft.com/en-us/azure/active-directory-b2c/enable-authentication-web-api?tabs=csharpclient#:~:text=Node.js-,Under%20the%20project,-root%20folder%2C%20open

@@ -1,5 +1,11 @@
 using Microsoft.Identity.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using PaceBackend.Clients;
+using PaceBackend.Data;
+using PaceBackend.Services;
+
+Console.WriteLine("Sincerly,\n___________          ___.           \n\\__    ___/_ ________\\_ |__   ____  \n  |    | |  |  \\_  __ \\ __ \\ /  _ \\ \n  |    | |  |  /|  | \\/ \\_\\ (  <_> )\n  |____| |____/ |__|  |___  /\\____/ \n                          \\/        \n");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +20,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         builder.Configuration.Bind("AzureAdB2C", options);
         options.TokenValidationParameters.NameClaimType = "name";
     }, options => builder.Configuration.Bind("AzureAdB2C", options));
+
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
+
+// Add my services to the container.
+builder.Services.AddScoped<UsersService>();
+builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<OpenAiClient>();
 
 // Add CORS policy
 builder.Services.AddCors(options =>
@@ -24,6 +36,12 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:5173") // Allow your React app's origin
             .AllowAnyHeader()
             .AllowAnyMethod());
+});
+
+// Add DB context
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration["DOTNET_CHATAPP_SQL_CONNECTION_STRING"]);
 });
 
 var app = builder.Build();
