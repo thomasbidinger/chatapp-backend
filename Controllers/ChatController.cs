@@ -15,6 +15,7 @@ using PaceBackend.Util;
 namespace PaceBackend.Controllers
 {
     [Authorize]
+    [RequiredScope("Generic.Read")]
     [Route("api/[controller]")]
     [ApiController]
     public class ChatController(ILogger<ChatController> logger, IHttpContextAccessor contextAccessor, DataContext context, ChatService chatService) : ControllerBase
