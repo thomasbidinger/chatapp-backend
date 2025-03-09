@@ -6,15 +6,8 @@ namespace PaceBackend.Clients;
 public class OpenAiClient : IChatClient
 {
     private readonly ChatClient _client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
-    public async Task<string> GetResponseAsync(string message)
-    {
-        ChatCompletion chatCompletion = await _client.CompleteChatAsync(message);
     
-        return chatCompletion.Content[0].Text;
-    }
-    
-    public async Task<string> GetResponseAsync(ChatMessageRequest[] chatMessageRequests)
+    public async Task<string> GetResponseAsync(string modelId, ChatMessageRequest[] chatMessageRequests)
     {
         // serialize the request
         List<ChatMessage> chatMessages = [];

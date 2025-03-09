@@ -4,26 +4,24 @@ using PaceBackend.DTOs.Requests;
 
 namespace PaceBackend.Services;
 
-public class ChatService(ILogger<ChatService> logger, OpenAiClient openAiClient)
+public class ChatService
 {
-    private readonly Dictionary<string, IChatClient> _chatClients = new()
-    {
-        {"openai", openAiClient}
-    };
+    private readonly Dictionary<string, IChatClient> _modelToChatClient = new();
     
-    public async Task<string> GetResponseAsync(string message)
+    public ChatService(ILogger<ChatService> logger, OpenAiClient openAiClient, GeminiClient geminiClient)
     {
-        var client = _chatClients["openai"];
-        var response = await client.GetResponseAsync(message);
-        
-        return response;
+        logger.LogInformation("Creating ChatService");
+        _modelToChatClient.Add("gpt-4o", openAiClient);
+        _modelToChatClient.Add("gemini-2.0-flash", geminiClient);
     }
     
-    public async Task<string> GetResponseAsync(ChatMessageRequest[] chatMessages)
+    public async Task<string> GetResponseAsync(ChatMessageRequest[] chatMessages, string modelId)
     {
-        var client = _chatClients["openai"];
+        if (!_modelToChatClient.Keys.Contains(modelId)) throw new ArgumentException($"Invalid model. Must be one of: [{_modelToChatClient.Keys.Aggregate((a, b) => a + ", " + b)}]");
         
-        var response = await client.GetResponseAsync(chatMessages);
+        var client = _modelToChatClient[modelId];
+        
+        var response = await client.GetResponseAsync(modelId, chatMessages);
         
         return response;
     }

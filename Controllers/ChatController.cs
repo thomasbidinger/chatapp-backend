@@ -45,12 +45,14 @@ namespace PaceBackend.Controllers
         
         // POST: api/Chat
         [HttpPost]
-        public async Task<ActionResult<string>> GetResponseWithContext([FromBody] ChatMessageRequest[] chatMessages)
+        public async Task<ActionResult<string>> GetResponseWithContext([FromBody] ChatMessageRequest[] chatMessages, [FromQuery] string modelId)
         {
+            if (string.IsNullOrWhiteSpace(modelId)) throw new ArgumentNullException(nameof(modelId));
+            
             string response;
             try
             {
-                response = await chatService.GetResponseAsync(chatMessages);
+                response = await chatService.GetResponseAsync(chatMessages, modelId);
                 
                 if (string.IsNullOrWhiteSpace(response))
                 {
@@ -59,7 +61,7 @@ namespace PaceBackend.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Could not find the necessary claim for the user");
+                logger.LogError(e, "Failed calling chat service");
                 throw;
             }
             

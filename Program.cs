@@ -26,8 +26,9 @@ builder.Services.AddControllers();
 
 // Add my services to the container.
 builder.Services.AddScoped<UsersService>();
-builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<OpenAiClient>();
+builder.Services.AddScoped<GeminiClient>();
+builder.Services.AddScoped<ChatService>();
 
 // Add CORS policy
 builder.Services.AddCors(options =>

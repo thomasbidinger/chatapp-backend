@@ -6,16 +6,10 @@ namespace PaceBackend.Clients;
 public interface IChatClient
 {
     /// <summary>
-    /// Send a chat to the bot and get a response.
+    /// Send a chat to a bot and get a response
     /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
-    Task<string> GetResponseAsync(string message);
-    
-    /// <summary>
-    /// Send a chat to the bot and get a response.
-    /// </summary>
+    /// <param name="modelId"></param>
     /// <param name="chatMessages"></param>
     /// <returns></returns>
-    Task<string> GetResponseAsync(ChatMessageRequest[] chatMessages);
+    Task<string> GetResponseAsync(string modelId, ChatMessageRequest[] chatMessages);
 }
